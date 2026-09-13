@@ -1,0 +1,74 @@
+# FlyRank Backend Capstone Evaluator Manifest
+# Multi-Platform Social Campaign Publisher (Social Media Studio)
+# Student: Deepak R
+
+version: "1.0"
+name: "flyrank-capstone-social-studio"
+language: "python"
+framework: "fastapi"
+
+run: "uvicorn main:app --host 0.0.0.0 --port 8000"
+seed: "curl -s -X POST http://localhost:8000/seed"
+test: "python tests/test_probes.py"
+
+base_url: "http://localhost:8000"
+
+endpoints:
+  root:
+    path: "/"
+    method: "GET"
+    expected_status: 200
+
+  seed_credentials:
+    path: "/seed"
+    method: "POST"
+    expected_status: 200
+
+  ingest_blog_post:
+    path: "/posts/ingest"
+    method: "POST"
+    body:
+      title: "Building Resilient Distributed Systems"
+      content: "A detailed breakdown of consensus protocols, idempotency keys, and webhook trust boundaries in backend production."
+      source_url: "https://flyrank.com/blog/resilient-distributed-systems"
+    expected_status: 201
+
+  get_campaign_status:
+    path: "/campaigns/camp_sample_eval"
+    method: "GET"
+    expected_status: 200
+
+  review_variant:
+    path: "/variants/var_sample_eval"
+    method: "PATCH"
+    body:
+      status: "approved"
+    expected_status: 200
+
+  schedule_campaign:
+    path: "/campaigns/camp_sample_eval/schedule"
+    method: "POST"
+    expected_status: 200
+
+  scheduler_tick:
+    path: "/scheduler/tick"
+    method: "POST"
+    expected_status: 200
+
+  delivery_webhook:
+    path: "/webhook/social-delivery"
+    method: "POST"
+    expected_status: 200
+
+  publish_audit_history:
+    path: "/history"
+    method: "GET"
+    expected_status: 200
+
+probes:
+  probe_1: "test_probe_1_idempotency_deduplication"
+  probe_2: "test_probe_2_rate_limit_backoff"
+  probe_3: "test_probe_3_worker_crash_and_resumption"
+  probe_4: "test_probe_4_delivery_webhook_verification"
+  probe_5: "test_probe_5_artifacts_and_caption_profiles"
+  probe_6: "test_probe_6_zero_plaintext_tokens_and_adapter_swap"
